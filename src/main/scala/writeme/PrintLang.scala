@@ -21,11 +21,27 @@ object PrintLang {
              env: Env=Map(),
              output: Output=List()): (Output, Int)  =
     node match {
-      case Num (i)        => ???
-      case Add (l,r)      => ???
-      case Mult(l,r)      => ???
-      case Print(e)       => ???
-      case Statements(es) => ???
+      case Num (i)        => (output, i)
+      case Add (l,r)      => {
+        val (lo, li) = interp(l, env, output)
+        val (ro, ri) = interp(r, env, lo)
+        (s"Adding $li to $ri" :: ro, li + ri)
+      }
+      case Mult(l,r)      => {
+        val (lo, li) = interp(l, env, output)
+        val (ro, ri) = interp(r, env, lo)
+        (s"Multiplying $li and $ri" :: ro, li * ri)
+      }
+      case Print(e)       => {
+        val (o, i) = interp(e, env, output)
+        println(o.mkString("\n"))
+        (o, i)
+      }
+      case Statements(es) => {
+        es.foldRight((List.empty[String], 0)) { (i, a) =>
+          interp(i, env, a._1)
+        }
+      }
     }
 
   def run(node: Exp, expected: Int) = {

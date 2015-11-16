@@ -16,9 +16,9 @@ object ArithLang {
     case class Mult(l:Exp, r:Exp) extends Exp
 
   def interp(node: Exp): Int = node match {
-    case Num (i)   => ???
-    case Add (l,r) => ???
-    case Mult(l,r) => ???
+    case Num (i)   => i
+    case Add (l,r) => interp(l) + interp(r)
+    case Mult(l,r) => interp(l) * interp(r)
   }
 
   implicit class Parser(val sc: StringContext) extends AnyVal {
